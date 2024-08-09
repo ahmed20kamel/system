@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add/Edit Order</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+</head>
+<body>
+    <h1>{{ form.instance.id|yesno:"Edit,Add New" }} Order</h1>
+    <form method="post" id="orderForm">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <p>
+            <label for="id_product_name">Product Name:</label>
+            {{ form.product_name }}
+        </p>
+        <p>
+            <label for="id_product_code">Product Code:</label>
+            {{ form.product_code }}
+        </p>
+        {% for field in form %}
+            {% if field.name != 'product_name' and field.name != 'product_code' %}
+                <p>
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {{ field.errors }}
+                </p>
+            {% endif %}
+        {% endfor %}
+        <button type="submit">Save</button>
+    </form>
+    <a href="{% url 'order_list' %}">Return to Order List</a>
+
+    <script>
+    $(function() {
+        function setupAutocomplete(elementId, otherElementId) {
+            $(elementId).autocomplete({
+                source: function(request, response) {
+                    console.log("Searching for:", request.term);
+                    $.ajax({
+                        url: "{% url 'product_search' %}",
+                        dataType: "json",
+                        data: {
+                            term: request.term,
+                            field: elementId === "#id_product_name" ? "name" : "code"
+                        },
+                        success: function(data) {
+                            console.log("Received data:", data);
+                            response(data);
+                        },
+                        error: function(xhr, status, error) {
+                            console.error("Error:", error);
+                        }
+                    });
+                },
+                minLength: 2,
+                select: function(event, ui) {
+                    $("#id_product_name").val(ui.item.name);
+                    $("#id_product_code").val(ui.item.code);
+                    return false;
+                }
+            });
+        }
+
+        setupAutocomplete("#id_product_name", "#id_product_code");
+        setupAutocomplete("#id_product_code", "#id_product_name");
+    });
+    </script>
+</body>
+</html>

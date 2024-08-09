@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+</head>
+<body>
+    <h1>Product List</h1>
+    <a href="{% url 'product_new' %}" style="padding: 10px; background-color: green; color: white; text-decoration: none; border-radius: 5px;">Add New Product</a>
+    <ul>
+        {% for product in products %}
+        <li>
+            {{ product.name }} - {{ product.code }} - Remaining Stock: {{ product.stock }}
+            <a href="{% url 'product_edit' id=product.id %}" style="padding: 5px; background-color: orange; color: white; text-decoration: none; border-radius: 5px;">Edit</a>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

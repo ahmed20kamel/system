@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Review Orders</title>
+</head>
+<body>
+    <h1>Review Orders</h1>
+    <ul>
+        {% for order in orders %}
+        <li>
+            Order ID: {{ order.id }}, Product: {{ order.product.name }}, Quantity: {{ order.quantity }}
+            <a href="{% url 'review_order' order.id %}">Review</a>
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

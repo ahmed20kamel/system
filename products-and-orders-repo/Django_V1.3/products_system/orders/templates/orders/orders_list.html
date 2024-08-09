@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order List</title>
+</head>
+<body>
+    <h1>Order List</h1>
+    <a href="{% url 'order_new' %}" style="padding: 10px; background-color: blue; color: white; text-decoration: none; border-radius: 5px;">Add New Order</a>
+    <form method="get">
+        <input type="text" name="employee_name" placeholder="Search by employee name...">
+        <input type="text" name="order_code" placeholder="Search by order code...">
+        <input type="text" name="product_name" placeholder="Search by product name...">
+        <input type="date" name="date_from" placeholder="Date from...">
+        <input type="date" name="date_to" placeholder="Date to...">
+        <button type="submit">Search</button>
+    </form>
+    <ul>
+        {% for order in orders %}
+        <li>
+            Order number {{ order.id }}: {{ order.product_name }} - Quantity: {{ order.quantity }}
+            <ul>
+                <li>Product code: {{ order.product_code }}</li>
+                <li>Supplier: {{ order.product.supplier }}</li>
+                <li>Status: {{ order.status }}</li>
+                <li>Order Date: {{ order.order_date }}</li>
+                <li>Due Date: {{ order.due_date|default:"None" }}</li>
+                <li>Project Name: {{ order.project_name }}</li>
+                <li>Project Code: {{ order.project_code }}</li>
+                <li>Order Name: {{ order.order_name }}</li>
+                <li>Project Phase: {{ order.project_phase }}</li>
+                <li>Project Consultant: {{ order.project_consultant }}</li>
+                <li>Project Location: {{ order.project_location }}</li>
+                {% if order.product.image %}
+                    <li><img src="{{ order.product.image.url }}" alt="Product Image" style="width:100px;"></li>
+                {% endif %}
+            </ul>
+            <a href="{% url 'order_edit' id=order.id %}" style="padding: 5px; background-color: orange; color: white; text-decoration: none; border-radius: 5px;">Edit</a>
+            <a href="{% url 'order_delete' id=order.id %}" style="padding: 5px; background-color: red; color: white; text-decoration: none; border-radius: 5px;">Delete</a>
+            {% if order.status == 'pending' %}
+                <a href="{% url 'order_approve' id=order.id %}" style="padding: 5px; background-color: green; color: white; text-decoration: none; border-radius: 5px;">Approve</a>
+                <a href="{% url 'order_disapprove' id=order.id %}" style="padding: 5px; background-color: darkred; color: white; text-decoration: none; border-radius: 5px;">Disapprove</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
